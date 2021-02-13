@@ -1,0 +1,10 @@
+{% extends "producto/layout.html" %}
+
+{% block body %}
+  <form action="{{ url_for('producto_create') }}" method="POST">
+
+    {% include 'producto/fragment/_form_producto.html'%}
+    <button type="submit" class="btn btn-primary">Enviar</button>
+
+  </form>
+{% endblock %}

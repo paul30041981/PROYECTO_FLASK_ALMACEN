@@ -1,0 +1,10 @@
+{% extends "producto/layout.html" %}
+
+{% block body %}
+  <form action="{{ url_for('producto_update', id=prod.id) }}" method="POST">
+
+    {% include 'producto/fragment/_form_producto.html'%}
+    <input type="submit" value="Actualizar">
+
+  </form>
+{% endblock %}
