@@ -1,19 +1,27 @@
 from app import app
 from flask import render_template, redirect, url_for, request, flash, get_flashed_messages
 from sqlalchemy.sql.expression import not_, or_
-
+from flask_login import login_required
 #import proyecto
-from productsBD import PRODUCTS
+# from productsBD import PRODUCTS
 from app.producto.productoModel import Product, ProductForm
+from app.category.categoryModel import Category
 from app import db
 # from werkzeug import abort 
 
+# @app.before_request
+# @login_required
+# def constructor():
+#    pass
+
 @app.route('/productos')
 @app.route('/product/<int:page>')
+@login_required
 def productos(page=1):
     return render_template('producto/productos.html', productos = Product.query.paginate(page,5))
 
 @app.route('/producto_delete/<int:id>')
+@login_required
 def producto_delete(id):
     prod = Product.query.get_or_404(id)#devuelve un objeto
     db.session.delete(prod)
@@ -22,11 +30,15 @@ def producto_delete(id):
     return redirect(url_for('productos'))
 
 @app.route('/producto_create', methods=('GET', 'POST'))
+@login_required
 def producto_create():
     
     form = ProductForm(meta={'csrf':False})
+    categories = [ (c.id, c.name) for c in Category.query.all() ]
+    form.category_id.choices = categories
+
     if form.validate_on_submit():
-        p = Product(request.form['name'], request.form['price'])
+        p = Product(request.form['name'], request.form['price'], request.form['category_id'])
         db.session.add(p)
         db.session.commit()
         flash("Producto Creado con Exito")
@@ -38,17 +50,23 @@ def producto_create():
     return render_template('producto/producto_create.html', form=form)
 
 @app.route('/producto_update/<int:id>', methods=('GET', 'POST'))
+@login_required
 def producto_update(id):
     prod = Product.query.get_or_404(id)
     form = ProductForm(meta={'csrf':False})
 
+    categories = [ (c.id, c.name) for c in Category.query.all() ]
+    form.category_id.choices = categories
+
     if request.method == "GET":
         form.name.data = prod.name
         form.price.data = prod.price
+        form.category_id.data = prod.category_id
 
     if form.validate_on_submit():
         prod.name = form.name.data
         prod.price = form.price.data
+        prod.category_id = form.category_id.data
         db.session.add(prod)
         db.session.commit()
         flash("Producto Actualizado con Exito")
@@ -61,6 +79,7 @@ def producto_update(id):
 
 
 @app.route('/detalle/<int:id>')
+@login_required
 def detalle(id):
     prod = Product.query.get(id)
     prod = Product.query.get_or_404(id)

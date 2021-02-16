@@ -1,0 +1,20 @@
+{% extends "general/layout/layout.html" %}
+
+{% block body %}
+
+  <div class="card text-left border-dark">
+    <div class="card-header text-white bg-dark">
+      <h5>Actualizar Categoria</h5>
+    </div>
+    <div class="card-body">
+      <form action="{{ url_for('category_update', id=cat.id) }}" method="POST">
+        {% include 'category/fragment/_form_category.html'%}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-dark me-md-2">Actualizar</button>
+            <a class="btn btn-dark me-md-2" href="{{ url_for('categories') }}">Volver</a>
+          </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

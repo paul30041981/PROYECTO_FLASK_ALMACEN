@@ -1,0 +1,19 @@
+{% extends "general/layout/layout.html" %}
+
+{% block body %}
+<div class="container-fluid" style="justify-content: center; display: flex;">
+  <div class="card text-left border-dark">
+    <div class="card-header text-white bg-dark">
+      <h5>Crear Usuario</h5>
+    </div>
+    <div class="card-body">
+      <form action="{{ url_for('user_create') }}" method="POST">
+         {% include 'auth/fragment/_form_user.html'%}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-dark me-md-2">Crear</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
